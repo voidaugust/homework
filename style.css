@@ -85,6 +85,7 @@
 :root {
   --pink-gradient: linear-gradient(99.59deg, #F473A3 3.39%, #FE5661 97.89%);
   --space: 12px;
+  --dropdown: url("data:image/svg+xml;utf8,<svg viewBox='0 0 11 6 ' width='11' height='6' xmlns='http://www.w3.org/2000/svg'><g><path d='M6.17855 5.37318C5.79541 5.72711 5.20459 5.72711 4.82145 5.37318L0.882517 1.73455C0.213977 1.11698 0.650938 7.64892e-08 1.56107 5.65795e-10L9.43893 -6.56609e-07C10.3491 -7.32532e-07 10.786 1.11698 10.1175 1.73455L6.17855 5.37318Z' fill='white'/></g></svg>")
 }
 
 body {
@@ -223,7 +224,7 @@ a {
   color: #fff;
   font-weight: bold;
   letter-spacing: 0.1rem;
-  background: url("data:image/svg+xml;utf8,<svg viewBox='0 0 11 6 ' width='11' height='6' xmlns='http://www.w3.org/2000/svg'><g><path d='M6.17855 5.37318C5.79541 5.72711 5.20459 5.72711 4.82145 5.37318L0.882517 1.73455C0.213977 1.11698 0.650938 7.64892e-08 1.56107 5.65795e-10L9.43893 -6.56609e-07C10.3491 -7.32532e-07 10.786 1.11698 10.1175 1.73455L6.17855 5.37318Z' fill='white'/></g></svg>") no-repeat;
+  background: var(--dropdown) no-repeat;
   background-position: right 0px top 50%;
   cursor: pointer;
 }
