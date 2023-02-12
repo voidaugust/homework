@@ -1,4 +1,5 @@
 /* fonts */
+
 @font-face {
   font-display: block;
   font-family: 'Poppins';
@@ -13,67 +14,9 @@
   font-weight: bold;
   font-style: normal;
 }
-/* adaptive design old */
-/*
-@media (max-width: 375px) {
-
-  .menu,
-  .search-results-elements,
-  .search-results-nav {
-    flex-direction: column;
-  }
-  .menu-block {
-    margin: 0 0 0 -47px;
-  }
-}
-
-@media (min-width: 767px) {  
-
-
-  .menu,
-  .search-results-elements,
-  .search-results-nav {
-    flex-direction: column;
-  }
-
-  .search-results-elements .card-wrapper {
-    margin-block: 20px 20px;
-  }
-}
-
-@media (min-width: 992px) {  
-  .main-container {
-    width: 992px; 
-    padding: 0 40px 0 40px;
-  }
-	.menu,
-  .search-results-nav {
-    flex-direction: row;
-  }
-}
-
-@media (min-width: 1200px) { 
-  .main-container {
-    width: 1200px; 
-    margin: 0 142px 0 145px;
-  }
-  .menu {
-    flex-direction: row;
-  }
-}
-
-@media (min-width: 1600px) { 
-  .main-container {
-    width: 1378px; 
-    margin: 0 142px 0 145px;
-  }
-  .menu {
-    flex-direction: row;
-  }
-}
-*/
 
 /* base design */
+
 *,
 *::before,
 *::after {
@@ -88,7 +31,7 @@
   --dropdown: url("data:image/svg+xml;utf8,<svg viewBox='0 0 11 6 ' width='11' height='6' xmlns='http://www.w3.org/2000/svg'><g><path d='M6.17855 5.37318C5.79541 5.72711 5.20459 5.72711 4.82145 5.37318L0.882517 1.73455C0.213977 1.11698 0.650938 7.64892e-08 1.56107 5.65795e-10L9.43893 -6.56609e-07C10.3491 -7.32532e-07 10.786 1.11698 10.1175 1.73455L6.17855 5.37318Z' fill='white'/></g></svg>")
 }
 
-body {
+.body {
   max-width: 100%;
   font-family: 'Poppins';
   font-weight: normal;
@@ -106,15 +49,18 @@ a {
   text-decoration: none;
 }
 
-.basic-format {
-  max-width: 100%;
-  width: 1665px;
+.basic-format,
+.main-container {
   margin: auto;
 }
 
+.basic-format {
+  max-width: 100%;
+}
+
 .main-container {
-  width: 82.763%;
-  margin: auto;
+  max-width: 1378px;
+  padding: 0 144px 0 144px;
 }
 
 .menu,  
@@ -128,14 +74,9 @@ a {
 
 .menu {
   width: 300px;
-  display: flex;
   margin: 48px 0 40px 0;
   align-items: center;
   justify-content: space-between;
-}
-
-.logo {
-  width: 87px;
 }
 
 .menu-link {
@@ -164,7 +105,10 @@ a {
 }
 
 /* search-block */
+
 .search-block {
+  display: flex;
+  flex-direction: column;
   margin: 0 0 47px 0;
 }
 
@@ -191,9 +135,10 @@ a {
 
 .search-form {
   display: flex;
+  justify-content: center;
   margin: auto;
-  width: 78%;
-  max-width: 810px;
+  width: 810px;
+  max-width: 100%;
   height: 64px;
   background: #252728;
   border-radius: 10px;
@@ -209,7 +154,8 @@ a {
   padding: 12px 16px 12px 16px;
 }
 
-.search-form select /* select style reset */ {
+/* select style reset */
+.search-form select {
   appearance: none;
   background-color: transparent;
   border: none;
@@ -256,17 +202,14 @@ a {
 
 .search-form .search-button {
   display: flex;
-  background-color: #252728;
+  background: url(./imgs/search.svg) no-repeat;
+  width: 30px;
+  height: 30px;
   margin: auto;
-  padding: 0 32px 0 0;
+  padding-right: 62px;
   align-items: center;
   border: 0;
-  border-radius: 0 10px 10px 0;
   cursor: pointer;
-}
-
-.search-form .search-img {
-  width: 30px;
 }
 
 /* search-results */
@@ -287,28 +230,23 @@ a {
 }
 
 .search-results-block .sort-selection {
+  padding-right: 10px;
   opacity: 0.9;
 }
 
 .search-results-block .divider {
   opacity: 0.25;
-  margin: 0 36px;
+  padding: 0 36px 0 26px;
 }
 
 .search-results-block .chosen-dot {
-  display: inline;
-  position: relative;
-  right: 6px;
-  bottom: 4px;
-}
-
-.chosen-dot .imgs-dot {
-  vertical-align: top;
+  background: url(./imgs/chosendot.svg) no-repeat;
+  background-position: 100% 0;
 }
 
 .search-results-elements {
   display: flex;
-  margin: 40px auto;
+  margin: 40px auto 0 auto;
 }
 
 .search-results-elements .card-wrapper {
@@ -370,23 +308,28 @@ a {
   text-decoration: underline;
 }
 
-.search-results-elements .download-button {
-  padding: 0 0 0 12px;
+.search-results-elements .download-button { 
+  /* Как лучше вставлять кнопку, как здесь или как на строках 361-365? 
+  Тут бэкграундом, там отдельным дивом */
+  background: url(./imgs/dwnld.svg) no-repeat;
+  background-size: 23.25px auto;
+  background-position: 100% 0;
+  padding-right: calc(23.25px + 12px);
+  opacity: 1;
 }
 
 /* search results navigation */
 
 .search-results-nav {
   display: flex;
+  justify-content: flex-end;
   margin: 70px auto;
   padding-bottom: 70px;
-  position: relative;
 }
 
 .next-page-container {
   position: absolute;
-  left: 50%;
-  margin-left: -121px;
+  left: calc(50% - 121px);
 }
 
 .next-page-button {
@@ -395,7 +338,6 @@ flex-direction: row;
 justify-content: center;
 align-items: center;
 padding: 20px 24px;
-gap: 10px;
 width: 242px;
 height: 76px;
 background: #252728;
@@ -404,20 +346,27 @@ border: 0;
 }
 
 .next-page-button .button-text {
+  display: inline;
   font-family: 'Poppins';
   letter-spacing: 0.1rem;
   color: #fff;
   font-size: 24px;
+  padding: 0 18px 0 0;
+}
+
+.next-page-button .button-arrow {
+  display: inline;
+  content: url(./imgs/bigarrow.svg);
+  width: 28px;
 }
 
 .search-results-pages {
-  position: absolute;
-  width: 246px;
-  height: 76px;
   display: flex;
   align-items: center;
-  left: 100%;
-  margin-left: -258px;
+  width: 246px;
+  height: 76px;
+  position: relative;
+  padding-right: var(--space);
 }
 
 .pages-text {
@@ -458,4 +407,168 @@ border: 0;
     font-size: 20px;
     font-weight: bold;
     opacity: 0.8;
+}
+
+/* adaptive design */
+
+@media (max-width: 767px) {
+  .main-container {
+    padding: 0 20px 0 20px;
+  }
+
+  .menu,
+  .search-results-elements,
+  .search-results-nav {
+    flex-direction: column;
+  }
+
+  .menu {
+    margin: 48px auto 40px auto;
+  }
+
+  .search-block .heading,
+  .text-wrapper .element-name {
+    font-size: 1.6em;
+  }
+
+  .search-block .subheading {
+    font-size: 1em;
+  }
+
+  .search-form {
+    max-width: 100%;
+    width: 510px;
+  }
+
+  .search-form .form-line {
+    margin: 15.5px 0 15.5px 15.5px;
+  }
+
+  .search-results-block header {
+    display: flex;
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .search-results-elements .card-wrapper {
+    width: 80%;
+    margin: 0 auto 48px auto;
+  }
+
+  .search-results-nav {
+    padding-right: 0;
+    margin: 12px auto 24px auto;
+  }
+
+  .next-page-button {
+    display: block;
+    margin: 0 auto 0 auto;
+  }
+
+  .search-results-pages {
+    position: relative;
+    top: 100px;
+    left: calc(50% - 121px);
+  }
+}
+
+@media (min-width: 768px) {  
+  .main-container {
+    padding: 0 40px 0 40px;
+  }
+
+  .menu,
+  .search-results-elements {
+    flex-direction: row;
+  }
+
+  .search-results-elements .element-imgs {
+    max-width: 160px;
+    padding: 12px 20px; 
+  }
+
+  .text-wrapper .element-name {
+    font-size: 1.7em;
+  }
+
+  .search-results-nav {
+    padding-right: 0;
+    flex-direction: column;
+  }
+
+  .next-page-button {
+    display: block;
+    margin: 0 auto 0 auto;
+  }
+
+  .search-results-pages {
+    position: relative;
+    top: 100px;
+    left: calc(50% - 121px);
+  }
+}
+
+@media (min-width: 992px) { 
+  .main-container {
+    padding: 0 50px 0 50px;
+  }
+
+	.menu,
+  .search-results-nav {
+    flex-direction: row;
+  }
+
+  .search-results-elements .element-imgs {
+    max-width: 250px;
+    padding: 32px 40px;
+  }
+
+  .text-wrapper .element-name {
+    font-size: 32px;
+  }
+
+  .search-results-pages {
+    top: 0;
+    left: 0;
+  }
+}
+
+@media (min-width: 1200px) { 
+  .main-container {
+    padding: 0 144px 0 144px;
+  }
+
+  .search-results-elements .element-imgs {
+    max-width: 100%;
+    padding: 32px 40px;
+  }
+
+  .text-wrapper .element-name {
+    font-size: 32px;
+  }
+
+  .search-results-pages {
+    top: 0;
+    left: 0;
+  }
+}
+
+@media (min-width: 1600px) { 
+  .menu {
+    flex-direction: row;
+  }
+
+  .search-results-elements .element-imgs {
+    max-width: 100%;
+    padding: 32px 40px;
+  }
+
+  .text-wrapper .element-name {
+    font-size: 32px;
+  }
+
+  .search-results-pages {
+    top: 0;
+    left: 0;
+  }
 }
