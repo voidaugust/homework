@@ -15,14 +15,16 @@
 // выводите в консоль сообщение об этом 'Больше потратили на орехи' или 'Больше потратили на фрукты и овощи'
 
 const money = 100;
-const priceTomatoes = 10;
-const priceCucumbers = 5;
-const priceApples = 15;
-let moneyForFruitsVegs = 2 * priceCucumbers + 2 * priceTomatoes + 2 * priceApples;
+const priceKgTomatoes = 10;
+const priceKgCucumbers = 5;
+const priceKgApples = 15;
+let moneyForFruitsVegs = 2 * priceKgCucumbers + 2 * priceKgTomatoes + 2 * priceKgApples;
 let moneyForNuts = money - moneyForFruitsVegs;
-console.log(moneyForNuts);
+console.log("На орехи мы потратили", moneyForNuts, "монет");
 console.log(
-  moneyForFruitsVegs > moneyForNuts,
+  "На орехи потратили больше, чем на остальное?", 
+  moneyForFruitsVegs < moneyForNuts);
+console.log(
   moneyForFruitsVegs > moneyForNuts
     ? "Больше потратили на фрукты и овощи"
     : "Больше потратили на орехи"
