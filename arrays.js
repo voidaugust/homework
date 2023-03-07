@@ -15,6 +15,8 @@ let getDigitsSum = number => {
   }
 };
 
+
+
 // console.log(getDigitsSum("zhopa"));
 // console.log(getDigitsSum(2025345345113));
 
