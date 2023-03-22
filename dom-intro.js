@@ -21,12 +21,17 @@ const buttonClean1 = document.querySelector('.button-clean1'),
       input1 = document.querySelector('.input1'),
       input2 = document.querySelector('.input2'),
       input3 = document.querySelector('.input3');
+      buttonHide = document.querySelector('.button-hide'),
+      box1 = document.querySelector('.box1');
 
 buttonClean1.addEventListener('click', cleanField1);
 buttonBlock.addEventListener('click', blockField);
 buttonUnblock.addEventListener('click', unblockField);
 buttonSwap.addEventListener('click', swapValues);
 buttonClean2.addEventListener('click', cleanField23);
+buttonHide.addEventListener('click', hideBox1);
+let blue = "#4444ffee";
+let grey = "#ababab";
 
 function fieldCleaning(...inputs) {
   for (const input of inputs) {
@@ -57,4 +62,17 @@ function swapValues(event) {
   let tempValue = input2.value;
   input2.value = input3.value;
   input3.value = tempValue;
+};
+
+function hideBox1(event){
+  box1.classList.toggle('hidden-block');
+  if (buttonHide.textContent == "hide") {
+    buttonHide.textContent = "show";
+    buttonHide.classList.remove("blue");
+    buttonHide.classList.add("grey");
+  } else {
+    buttonHide.textContent = "hide";
+    buttonHide.classList.add("blue");
+    buttonHide.classList.remove("grey");
+  };
 };
