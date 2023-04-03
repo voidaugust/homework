@@ -38,6 +38,75 @@
 	проверить
  */
 
+const boxes = document.querySelectorAll('.box'),
+      buttons = document.querySelectorAll('.button'),
+
+      question1 = document.querySelectorAll('.question1'),
+      question2 = document.querySelectorAll('.question2'),
+      question3 = document.querySelectorAll('.question3'),
+      questions = [question1, question2, question3],
+
+      rightAnswers = [1, 3, 3],
+      userAnswers = [],
+      results = document.querySelector('.results');
+
+for (let i = 0; i < questions.length; i++) {
+  const question = questions[i],
+        button = buttons[i];
+  for (let j = 0; j < question.length; j++) {
+    const responseOption = question[j];
+    responseOption.addEventListener("click", () => removeDisabled(question, button));
+  };
+};
+
+for (let i = 0; i < buttons.length; i++) {
+  const question = questions[i],
+        button = buttons[i],
+        thisBox = boxes[i],
+        nextBox = boxes[i+1];
+  button.addEventListener("click", () => getAnswerMoveFurther(question, thisBox, nextBox));
+};
+
+function removeDisabled(question, button) {
+  if (question.checked)
+    button.removeAttribute("disabled");
+    button.removeAttribute("disabled");
+    // Не знаю почему, но в Хроме и Фаерфоксе работает только если дважды написать
+};
+
+function getAnswerMoveFurther(question, thisBox, nextBox) {
+  let userAnswer
+  for (let i = 0; i < question.length; i++) {
+    if (question[i].checked)
+      userAnswer = question[i].value;
+  };
+  userAnswers.push(userAnswer);
+  thisBox.classList.add("hidden");
+  nextBox.classList.remove("hidden");
+
+  const lastButton = document.querySelector('.button3');
+  lastButton.addEventListener("click", getResults);
+};
+
+function getResults() {
+  let howMuchRightAnswers = 0;
+  for (let i = 0; i < userAnswers.length; i++) {
+    if (userAnswers[i] == rightAnswers[i])
+      howMuchRightAnswers += 1;
+  };
+
+  if (howMuchRightAnswers == 1) {
+    results.innerText = "Вы дали только 1 правильный ответ 🤔";
+  } else if (howMuchRightAnswers == 2) {
+    results.innerText = "Вы дали 2 правильных ответа 😏";
+  } else if (howMuchRightAnswers == 3) {
+    results.innerText = "Вы ответили на все вопросы правильно 😎";
+  } else {
+    results.innerText = "Вы ответили на все вопросы неправильно 😔";
+  };
+};
+
+/** first version of code
 const box1 = document.querySelector('.box1'),
       box2 = document.querySelector('.box2'),
       box3 = document.querySelector('.box3'),
@@ -111,7 +180,7 @@ function getResults() {
     results.innerText = "Вы ответили на все вопросы неправильно 😔";
   };
 };
-
+*/
 
 
 /** Задача №2 
