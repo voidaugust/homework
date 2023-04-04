@@ -48,7 +48,13 @@ const boxes = document.querySelectorAll('.box'),
 
       rightAnswers = [1, 3, 3],
       userAnswers = [],
-      results = document.querySelector('.results');
+      results = document.querySelector('.results'),
+      resultsObj = {
+        0: "Вы ответили на все вопросы неправильно 😔",
+        1: "Вы дали только 1 правильный ответ 🤔",
+        2: "Вы дали 2 правильных ответа 😏",
+        3: "Вы ответили на все вопросы правильно 😎",
+      };
 
 for (let i = 0; i < questions.length; i++) {
   const question = questions[i],
@@ -94,16 +100,7 @@ function getResults() {
     if (userAnswers[i] == rightAnswers[i])
       howMuchRightAnswers += 1;
   };
-
-  if (howMuchRightAnswers == 1) {
-    results.innerText = "Вы дали только 1 правильный ответ 🤔";
-  } else if (howMuchRightAnswers == 2) {
-    results.innerText = "Вы дали 2 правильных ответа 😏";
-  } else if (howMuchRightAnswers == 3) {
-    results.innerText = "Вы ответили на все вопросы правильно 😎";
-  } else {
-    results.innerText = "Вы ответили на все вопросы неправильно 😔";
-  };
+  results.innerText = resultsObj[howMuchRightAnswers];
 };
 
 /** first version of code
