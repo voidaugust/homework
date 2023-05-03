@@ -1,0 +1,151 @@
+/* @font-face {
+  font-display: block;
+  font-family: 'Syne';
+  src: url('../fonts/Syne/Syne-ExtraBold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+} */
+
+:root {
+  --light: #f8f9fa;
+  --red: #dc3545;
+  --blue: #007bff;
+  --gray: #6c757d;
+  --gray-dark: #343a40;
+}
+
+.section h1 {
+  font-family: 'Syne', 'Helvetica';
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.sq-angles {
+  border-radius: 0;
+}
+
+/* styles for to-do */
+.to-do-form,
+.to-do-tasks {
+  width: clamp(300px, 55%, 500px);
+}
+
+.to-do-input {
+  border: 0;
+  border-bottom: 1px solid lightgray;
+  padding: 0 0 5px 0;
+  box-sizing: border-box;
+  caret-color: var(--gray);
+}
+
+[data-tab="todo"] input:focus {
+  outline: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  border-color: var(--gray-dark);
+}
+
+.to-do-list {
+  line-height: 50px;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fa-pen,
+.fa-paste,
+.fa-trash {
+  position: relative;
+  cursor: pointer;
+  color: lightgray;
+}
+
+.fa-pen {
+  left: 10px;
+}
+
+.fa-paste {
+  left: 20px;
+}
+
+.fa-trash {
+  left: 30px;
+}
+
+[data-tab="todo"] .done {
+  position: relative;
+  vertical-align: middle;
+  top: -1px;
+  margin-right: 10px;
+  accent-color: var(--red);
+  cursor: pointer;
+}
+
+.is-done,
+.is-undone {
+  position: relative;
+  display: inline-block;
+}
+
+.is-done::before,
+.is-undone::before {
+  content: '';
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  border-bottom: 2px solid var(--red);
+}
+
+.is-done::before {
+  animation: draw-line 200ms forwards;
+}
+
+.is-undone::before {
+  animation: remove-line 200ms forwards;
+}
+
+@keyframes draw-line {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes remove-line {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
+}
+
+/* styles for counter */
+.counter-btn {
+  min-width: 140px;
+  min-height: 100px;
+  border: 0;
+  font-size: 36px;
+}
+
+.counter {
+  border-radius: 0;
+  border: 0;
+  box-sizing: border-box;
+  width: 140px;
+  text-align: center;
+  font-size: 24px;
+}
+
+.counter:focus {
+outline: none;
+box-shadow: none;
+-webkit-box-shadow: none;
+}
+
+.storage-btn {
+  width: 120px
+}
