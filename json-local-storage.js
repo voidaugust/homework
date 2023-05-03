@@ -61,32 +61,33 @@ const Task = class {
   };
 };
 
-let tasksModel = [];
-
 const formController = (e) => {
   e.preventDefault();
 
   if (toDoInput.value && !toDoInput.dataset.editId) 
-    tasksModelFuncs.create(toDoInput.value);
+    tasksModel.create(toDoInput.value);
   
   else if (toDoInput.dataset.editId !== "") 
-    tasksModelFuncs.saveEdit(toDoInput.value, toDoInput.dataset.editId);
+    tasksModel.saveEdit(toDoInput.value, toDoInput.dataset.editId);
 };
 
 const listController = (e) => {
-  if (e.target.classList.contains(editPen)) tasksModelFuncs.edit(e.target);
-  if (e.target.classList.contains(copyTask)) tasksModelFuncs.copy(e.target);
-  if (e.target.classList.contains(done)) tasksModelFuncs.isDone(e.target);
-  if (e.target.classList.contains(deleteTrash)) tasksModelFuncs.delete(e.target);
+  if (e.target.classList.contains(editPen)) tasksModel.edit(e.target);
+  if (e.target.classList.contains(copyTask)) tasksModel.copy(e.target);
+  if (e.target.classList.contains(done)) tasksModel.isDone(e.target);
+  if (e.target.classList.contains(deleteTrash)) tasksModel.delete(e.target);
 };
 
-const tasksModelFuncs = {
-  create(value, idFromModel) {
+const tasksModel = {
+  state: [],
+
+  create(value, idFromModel, isDoneFromModel) {
     const id = (idFromModel) ? idFromModel : Date.now(),
-          task = new Task(id, value, false);
+          isDone = (isDoneFromModel === true) ? true : false,
+          task = new Task(id, value, isDone);
     
-    tasksModel.push(task);
-    tasksModelFuncs.render(id, value);
+    tasksModel.state.push(task);
+    tasksModel.render(id, value, isDoneFromModel);
 
     toDoInput.value = "";
   },
@@ -94,16 +95,16 @@ const tasksModelFuncs = {
   delete(target) {
     const li = target.closest("LI"),
           id = li.dataset.id;
-          taskToDelete = tasksModel.find(task => task.id === +id);
+          taskToDelete = tasksModel.state.find(task => task.id === +id);
 
-    tasksModel = tasksModel.filter(task => task !== taskToDelete);
-    tasksModelFuncs.render(id);
+    tasksModel.state = tasksModel.state.filter(task => task !== taskToDelete);
+    tasksModel.render(id);
   },
   
   edit(target) {
     const li = target.closest("LI"),
           id = li.dataset.id,
-          taskToEdit = tasksModel.find(task => task.id === +id);
+          taskToEdit = tasksModel.state.find(task => task.id === +id);
 
     toDoInput.value = taskToEdit.value;
     toDoInput.dataset.editId = id;
@@ -111,16 +112,16 @@ const tasksModelFuncs = {
   },
 
   saveEdit(value, id) {
-    const taskToEdit = tasksModel.find(task => task.id === +id);
+    const taskToEdit = tasksModel.state.find(task => task.id === +id);
 
     if (value) {
       taskToEdit.value = toDoInput.value;
-      tasksListFuncs.submitEdit(value, id);
+      tasksList.submitEdit(value, id);
     } else {
-      tasksModel = tasksModel.filter(task => task !== taskToEdit);
+      tasksModel.state = tasksModel.state.filter(task => task !== taskToEdit);
     };
 
-    tasksModelFuncs.render(id, taskToEdit.value);
+    tasksModel.render(id, taskToEdit.value);
 
     toDoInput.value = "";
     toDoInput.dataset.editId = "";
@@ -129,43 +130,45 @@ const tasksModelFuncs = {
   copy(target) {
     const li = target.closest("LI"),
           id = li.dataset.id,
-          taskToCopy = tasksModel.find(task => task.id === +id);
+          taskToCopy = tasksModel.state.find(task => task.id === +id);
 
-    tasksModelFuncs.create(taskToCopy.value);
+    tasksModel.create(taskToCopy.value);
   },
 
   isDone(target) {
     const li = target.closest("LI"),
           id = li.dataset.id,
-          taskDone = tasksModel.find(task => task.id === +id);
+          taskDone = tasksModel.state.find(task => task.id === +id);
 
     taskDone.isDone = (target.checked) ? true : false;
-    tasksModelFuncs.render(id);
+    tasksModel.render(id);
 
-    tasksListFuncs.cross(target, li);
+    tasksList.cross(li);
   },
 
-  render(id, value) {
-    localStorage.setItem("tasksModel", JSON.stringify(tasksModel));
+  render(id, value, isDone) {
+    localStorage.setItem("tasksModel.state", JSON.stringify(tasksModel.state));
 
-    const tasksList = Array.from(toDoList.children);
-    
-    if (JSON.stringify(tasksList) !== JSON.stringify(tasksModel)) {
-      if (tasksList.length < tasksModel.length) tasksListFuncs.add(id, value);  
-      if (tasksList.length > tasksModel.length) tasksListFuncs.remove(id);
+    tasksList.view = Array.from(toDoList.children);
+
+    if (JSON.stringify(tasksList.view) !== JSON.stringify(tasksModel.state)) {
+      if (tasksList.view.length < tasksModel.state.length) tasksList.add(id, value, isDone);  
+      if (tasksList.view.length > tasksModel.state.length) tasksList.remove(id);
     };
   },
 
   initialRender() {
-    const taskModelView = JSON.parse(localStorage.getItem("tasksModel"));
+    const taskModelView = JSON.parse(localStorage.getItem("tasksModel.state"));
     
     if (taskModelView)
-      taskModelView.forEach(task => {tasksModelFuncs.create(task.value, task.id)});
+      taskModelView.forEach(task => {tasksModel.create(task.value, task.id, task.isDone);});
   }
 };
 
-const tasksListFuncs = {
-  add(id, value) {
+const tasksList = {
+  view: [],
+
+  add(id, value, isDone) {
     const li = document.createElement("li"),
           label = document.createElement("label");
 
@@ -176,8 +179,9 @@ const tasksListFuncs = {
     li.append(label);
   
     li.dataset.id = id;
-    tasksListFuncs.addIcons(li, id);
-  
+    tasksList.addIcons(li, id);
+    if (isDone === true) tasksList.cross(li, isDone);
+
     toDoList.append(li);
   },
   
@@ -208,16 +212,19 @@ const tasksListFuncs = {
     toDoInput.focus();
   },
 
-  cross(target, li) {
-    const label = li.querySelector("label");
+  cross(li, wasDone) {
+    const input = li.querySelector("input"),
+          label = li.querySelector("label");
 
-    if (target.checked) {
+    if (input.checked || wasDone) {
       label.classList.add("is-done");
       label.classList.remove("is-undone");
     } else {
       label.classList.add("is-undone");
       label.classList.remove("is-done");
     };
+
+    if (!input.checked && wasDone) input.checked = true;
   },
 
   submitEdit(value, id) {
@@ -232,8 +239,7 @@ const tasksListFuncs = {
 
 toDoForm.addEventListener("submit", formController);
 toDoList.addEventListener("click", listController);
-tasksModelFuncs.initialRender();
-
+tasksModel.initialRender();
 
 
 
