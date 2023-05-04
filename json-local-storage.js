@@ -45,7 +45,7 @@ navTabs.addEventListener("click", tabSwitch);
 */
 
 const toDoForm = document.querySelector(".to-do-form"),
-      toDoInput = document.querySelector(".to-do-input"),
+      toDoInput = toDoForm.querySelector(".to-do-input"),
       toDoList = document.querySelector(".to-do-list"),
       toDoItem = "to-do-item",
       editPen = "fa-pen",
@@ -82,7 +82,7 @@ const tasksModel = {
   state: [],
 
   create(value, idFromModel, isDoneFromModel) {
-    const id = (idFromModel) ? idFromModel : Date.now(),
+    const id = (idFromModel) ? idFromModel : String(Date.now()),
           isDone = (isDoneFromModel === true) ? true : false,
           task = new Task(id, value, isDone);
     
@@ -91,20 +91,18 @@ const tasksModel = {
 
     toDoInput.value = "";
   },
-  
-  delete(target) {
-    const li = target.closest("LI"),
-          id = li.dataset.id;
-          taskToDelete = tasksModel.state.find(task => task.id === +id);
+
+  delete(target, idFromEdit) {
+    const id = (idFromEdit) ? idFromEdit : target.closest("LI").dataset.id;
+          taskToDelete = tasksModel.state.find(task => task.id === id);
 
     tasksModel.state = tasksModel.state.filter(task => task !== taskToDelete);
     tasksModel.render(id);
   },
-  
+
   edit(target) {
-    const li = target.closest("LI"),
-          id = li.dataset.id,
-          taskToEdit = tasksModel.state.find(task => task.id === +id);
+    const id = target.closest("LI").dataset.id,
+          taskToEdit = tasksModel.state.find(task => task.id === id);
 
     toDoInput.value = taskToEdit.value;
     toDoInput.dataset.editId = id;
@@ -112,13 +110,13 @@ const tasksModel = {
   },
 
   saveEdit(value, id) {
-    const taskToEdit = tasksModel.state.find(task => task.id === +id);
+    const taskToEdit = tasksModel.state.find(task => task.id === id);
 
     if (value) {
       taskToEdit.value = toDoInput.value;
       tasksList.submitEdit(value, id);
     } else {
-      tasksModel.state = tasksModel.state.filter(task => task !== taskToEdit);
+      tasksModel.delete(null, id);
     };
 
     tasksModel.render(id, taskToEdit.value);
@@ -128,9 +126,8 @@ const tasksModel = {
   },
 
   copy(target) {
-    const li = target.closest("LI"),
-          id = li.dataset.id,
-          taskToCopy = tasksModel.state.find(task => task.id === +id);
+    const id = target.closest("LI").dataset.id,
+          taskToCopy = tasksModel.state.find(task => task.id === id);
 
     tasksModel.create(taskToCopy.value);
   },
@@ -138,7 +135,7 @@ const tasksModel = {
   isDone(target) {
     const li = target.closest("LI"),
           id = li.dataset.id,
-          taskDone = tasksModel.state.find(task => task.id === +id);
+          taskDone = tasksModel.state.find(task => task.id === id);
 
     taskDone.isDone = (target.checked) ? true : false;
     tasksModel.render(id);
@@ -184,7 +181,7 @@ const tasksList = {
 
     toDoList.append(li);
   },
-  
+
   addIcons(li, id) {
     const checkbox = document.createElement("input"),
           editIcon = document.createElement("i"),
@@ -219,21 +216,21 @@ const tasksList = {
     if (input.checked || wasDone) {
       label.classList.add("is-done");
       label.classList.remove("is-undone");
+      input.checked = true;
     } else {
       label.classList.add("is-undone");
       label.classList.remove("is-done");
     };
-
-    if (!input.checked && wasDone) input.checked = true;
   },
 
   submitEdit(value, id) {
     const li = toDoList.querySelector(`[data-id="${id}"]`),
-          label = li.querySelector("label");
+          label = li.querySelector("label"),
+          checkbox = label.previousSibling;
 
     label.textContent = value;
     label.setAttribute("for", value);
-    label.previousSibling.setAttribute("name", value);
+    checkbox.setAttribute("name", value);
   }
 };
 
