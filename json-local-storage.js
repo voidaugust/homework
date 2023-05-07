@@ -183,6 +183,8 @@ const modelMethods = {
       if (nameChanged) renderMethods.submitEdit(id);
       if (isDoneChanged) renderMethods.cross(id);
     };
+
+    model.previousState = JSON.parse(JSON.stringify([]));
   },
 
   initialRender() {
