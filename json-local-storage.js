@@ -63,7 +63,7 @@ const Task = class {
 
 const model = {
   state: [],
-  previousState: []
+  previousState: [],
 };
 
 const formController = (e) => {
@@ -84,7 +84,7 @@ const listController = (e) => {
 };
 
 const clearInput = () => toDoInput.value = "";
-
+const clearEditId = () => toDoInput.dataset.editId = "";
 const startTaskEdit = (target) => {
   const id = target.closest("LI").dataset.id,
         taskToEdit = model.state.find(task => task.id === id);
@@ -95,55 +95,79 @@ const startTaskEdit = (target) => {
 };
 
 const modelMethods = {
-  create(value, idFromModel, isDoneFromModel) {
+  updateState(thisTask, fn, index) {
+    if (fn === "saveEdit" || fn === "markIsDone") fn = "update";
+
+    const updateFunctions = {
+      "create": [...model.state, thisTask],
+      "delete": model.state.filter(task => task !== thisTask),
+      "update": [
+        ...model.state.slice(0, index), 
+        thisTask, 
+        ...model.state.slice(index + 1)
+      ]
+    };
+  
+    model.state = updateFunctions[fn] || model.state;
+  },
+
+  updatePreviousState() {
     model.previousState = JSON.parse(JSON.stringify(model.state));
+  },
+
+  clearPreviousState() {
+    model.previousState = JSON.parse(JSON.stringify([]));
+  },
+
+  create(value, idFromModel, isDoneFromModel) {
+    modelMethods.updatePreviousState();
 
     const id = (idFromModel) ? idFromModel : String(Date.now()),
           isDone = (isDoneFromModel === true) ? true : false,
           task = new Task(id, value, isDone);
 
-    model.state = [...model.state, task];
+    modelMethods.updateState(task, arguments.callee.name);
+
     modelMethods.render(id);
+    modelMethods.saveToLocalStorage();
 
     clearInput();
-
-    modelMethods.saveToLocalStorage();
   },
 
   delete(target, idFromEdit) {
-    model.previousState = JSON.parse(JSON.stringify(model.state));
+    modelMethods.updatePreviousState();
 
-    const id = (idFromEdit) ? idFromEdit : target.closest("LI").dataset.id;
+    const id = (idFromEdit) ? idFromEdit : target.closest("LI").dataset.id,
           taskToDelete = model.state.find(task => task.id === id);
 
-    model.state = model.state.filter(task => task !== taskToDelete);
-
+    modelMethods.updateState(taskToDelete, arguments.callee.name);
     modelMethods.render(id);
-
     modelMethods.saveToLocalStorage();
   },
 
   saveEdit(value, id) {
-    model.previousState = JSON.parse(JSON.stringify(model.state));
+    modelMethods.updatePreviousState();
 
-    const taskToEdit = model.state.find(task => task.id === id),
+    const fn = arguments.callee.name,
+          taskToEdit = model.state.find(task => task.id === id),
           index = model.state.indexOf(taskToEdit);
 
     if (value) {
       taskToEdit.value = toDoInput.value;
-      model.state = [...model.state.slice(0, index), taskToEdit, ...model.state.slice(index + 1)];
+      modelMethods.updateState(taskToEdit, fn, index);
       modelMethods.render(id);
     } else {
       modelMethods.delete(null, id);
     };
 
-    clearInput();
-
     modelMethods.saveToLocalStorage();
+
+    clearEditId();
+    clearInput();
   },
 
   copy(target) {
-    model.previousState = JSON.parse(JSON.stringify(model.state));
+    modelMethods.updatePreviousState();
 
     const id = target.closest("LI").dataset.id,
           taskToCopy = model.state.find(task => task.id === id);
@@ -152,19 +176,18 @@ const modelMethods = {
   },
 
   markIsDone(target) {
-    model.previousState = JSON.parse(JSON.stringify(model.state));
+    modelMethods.updatePreviousState();
 
-    const li = target.closest("LI"),
+    const fn = arguments.callee.name,
+          li = target.closest("LI"),
           id = li.dataset.id,
           taskDone = model.state.find(task => task.id === id),
           index = model.state.indexOf(taskDone);
 
     taskDone.isDone = target.checked === true;
 
-    model.state = [...model.state.slice(0, index), taskDone, ...model.state.slice(index + 1)];
-
+    modelMethods.updateState(taskDone, fn, index);
     modelMethods.render(id);
-
     modelMethods.saveToLocalStorage();
   },
 
@@ -184,7 +207,7 @@ const modelMethods = {
       if (isDoneChanged) renderMethods.cross(id);
     };
 
-    model.previousState = JSON.parse(JSON.stringify([]));
+    modelMethods.clearPreviousState();
   },
 
   initialRender() {
@@ -263,7 +286,6 @@ const renderMethods = {
   },
 
   submitEdit(id) {
-    toDoInput.dataset.editId = "";
 
     const task = model.state.find(task => task.id === id),
           li = toDoList.querySelector(`[data-id="${id}"]`),
