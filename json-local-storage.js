@@ -61,125 +61,158 @@ const Task = class {
   };
 };
 
+const model = {
+  state: [],
+  previousState: []
+};
+
 const formController = (e) => {
   e.preventDefault();
 
   if (toDoInput.value && !toDoInput.dataset.editId) 
-    tasksModel.create(toDoInput.value);
+    modelMethods.create(toDoInput.value);
   
   else if (toDoInput.dataset.editId !== "") 
-    tasksModel.saveEdit(toDoInput.value, toDoInput.dataset.editId);
+    modelMethods.saveEdit(toDoInput.value, toDoInput.dataset.editId);
 };
 
 const listController = (e) => {
-  if (e.target.classList.contains(editPen)) tasksModel.edit(e.target);
-  if (e.target.classList.contains(copyTask)) tasksModel.copy(e.target);
-  if (e.target.classList.contains(done)) tasksModel.isDone(e.target);
-  if (e.target.classList.contains(deleteTrash)) tasksModel.delete(e.target);
+  if (e.target.classList.contains(editPen)) taskEdit(e.target);
+  else if (e.target.classList.contains(copyTask)) modelMethods.copy(e.target);
+  else if (e.target.classList.contains(done)) modelMethods.markIsDone(e.target);
+  else if (e.target.classList.contains(deleteTrash)) modelMethods.delete(e.target);
 };
 
-const tasksModel = {
-  state: [],
+const clearInput = () => toDoInput.value = "";
 
+const taskEdit = (target) => {
+  const id = target.closest("LI").dataset.id,
+        taskToEdit = model.state.find(task => task.id === id);
+
+  toDoInput.value = taskToEdit.value;
+  toDoInput.dataset.editId = id;
+  toDoInput.focus();
+};
+
+const modelMethods = {
   create(value, idFromModel, isDoneFromModel) {
+    model.previousState = JSON.parse(JSON.stringify(model.state));
+
     const id = (idFromModel) ? idFromModel : String(Date.now()),
           isDone = (isDoneFromModel === true) ? true : false,
           task = new Task(id, value, isDone);
-    
-    tasksModel.state.push(task);
-    tasksModel.render(id, value, isDoneFromModel);
 
-    toDoInput.value = "";
+    model.state = [...model.state, task];
+    modelMethods.render(id);
+
+    clearInput();
+
+    modelMethods.saveToLocalStorage();
   },
 
   delete(target, idFromEdit) {
+    model.previousState = JSON.parse(JSON.stringify(model.state));
+
     const id = (idFromEdit) ? idFromEdit : target.closest("LI").dataset.id;
-          taskToDelete = tasksModel.state.find(task => task.id === id);
+          taskToDelete = model.state.find(task => task.id === id);
 
-    tasksModel.state = tasksModel.state.filter(task => task !== taskToDelete);
-    tasksModel.render(id);
-  },
+    model.state = model.state.filter(task => task !== taskToDelete);
 
-  edit(target) {
-    const id = target.closest("LI").dataset.id,
-          taskToEdit = tasksModel.state.find(task => task.id === id);
+    modelMethods.render(id);
 
-    toDoInput.value = taskToEdit.value;
-    toDoInput.dataset.editId = id;
-    toDoInput.focus();
+    modelMethods.saveToLocalStorage();
   },
 
   saveEdit(value, id) {
-    const taskToEdit = tasksModel.state.find(task => task.id === id);
+    model.previousState = JSON.parse(JSON.stringify(model.state));
+
+    const taskToEdit = model.state.find(task => task.id === id);
 
     if (value) {
       taskToEdit.value = toDoInput.value;
-      tasksList.submitEdit(value, id);
+      modelMethods.render(id);
     } else {
-      tasksModel.delete(null, id);
+      modelMethods.delete(null, id);
     };
 
-    tasksModel.render(id, taskToEdit.value);
+    clearInput();
 
-    toDoInput.value = "";
-    toDoInput.dataset.editId = "";
+    modelMethods.saveToLocalStorage();
   },
 
   copy(target) {
-    const id = target.closest("LI").dataset.id,
-          taskToCopy = tasksModel.state.find(task => task.id === id);
+    model.previousState = JSON.parse(JSON.stringify(model.state));
 
-    tasksModel.create(taskToCopy.value);
+    const id = target.closest("LI").dataset.id,
+          taskToCopy = model.state.find(task => task.id === id);
+
+    modelMethods.create(taskToCopy.value);
   },
 
-  isDone(target) {
+  markIsDone(target) {
+    model.previousState = JSON.parse(JSON.stringify(model.state));
+
     const li = target.closest("LI"),
           id = li.dataset.id,
-          taskDone = tasksModel.state.find(task => task.id === id);
+          taskDone = model.state.find(task => task.id === id),
+          index = model.state.indexOf(taskDone);
 
-    taskDone.isDone = (target.checked) ? true : false;
-    tasksModel.render(id);
+    taskDone.isDone = target.checked === true;
 
-    tasksList.cross(li);
+    model.state = [...model.state.slice(0, index), taskDone, ...model.state.slice(index + 1)];
+
+    modelMethods.render(id);
+
+    modelMethods.saveToLocalStorage();
   },
 
-  render(id, value, isDone) {
-    localStorage.setItem("tasksModel.state", JSON.stringify(tasksModel.state));
+  render(id) {
+    if (model.previousState.length !== model.state.length) {
+      if (model.previousState.length < model.state.length) renderMethods.add(id); 
+      if (model.previousState.length > model.state.length) renderMethods.remove(id);
+    
+    } else {
+      const currentStateTask = model.state.find(task => task.id === id),
+            previousStateTask = model.previousState.find(task => task.id === id),
 
-    tasksList.view = Array.from(toDoList.children);
+            nameChanged = currentStateTask.value !== previousStateTask.value,
+            isDoneChanged = currentStateTask.isDone !== previousStateTask.isDone;
 
-    if (JSON.stringify(tasksList.view) !== JSON.stringify(tasksModel.state)) {
-      if (tasksList.view.length < tasksModel.state.length) tasksList.add(id, value, isDone);  
-      if (tasksList.view.length > tasksModel.state.length) tasksList.remove(id);
+      if (nameChanged) renderMethods.submitEdit(id);
+      if (isDoneChanged) renderMethods.cross(id);
     };
   },
 
   initialRender() {
-    const taskModelView = JSON.parse(localStorage.getItem("tasksModel.state"));
+    const initialModel = JSON.parse(localStorage.getItem("model.state"));
     
-    if (taskModelView)
-      taskModelView.forEach(task => {tasksModel.create(task.value, task.id, task.isDone);});
+    if (initialModel)
+      initialModel.forEach(task => {modelMethods.create(task.value, task.id, task.isDone)});
+  },
+
+  saveToLocalStorage() {
+    localStorage.setItem("model.state", JSON.stringify(model.state));
   }
 };
 
-const tasksList = {
-  view: [],
-
-  add(id, value, isDone) {
-    const li = document.createElement("li"),
+const renderMethods = {
+  add(id) {
+    const task = model.state.find(task => task.id === id),
+          li = document.createElement("li"),
           label = document.createElement("label");
 
     li.classList.add(toDoItem);
 
-    label.textContent = value;
-    label.setAttribute("for", value);
+    label.textContent = task.value;
+    label.setAttribute("for", task.value);
     li.append(label);
   
     li.dataset.id = id;
-    tasksList.addIcons(li, id);
-    if (isDone === true) tasksList.cross(li, isDone);
+    renderMethods.addIcons(li, id);
 
     toDoList.append(li);
+
+    if (task.isDone === true) renderMethods.cross(id);
   },
 
   addIcons(li, id) {
@@ -209,11 +242,13 @@ const tasksList = {
     toDoInput.focus();
   },
 
-  cross(li, wasDone) {
-    const input = li.querySelector("input"),
+  cross(id) {
+    const task = model.state.find(task => task.id === id),
+          li = toDoList.querySelector(`[data-id="${id}"]`),
+          input = li.querySelector("input"),
           label = li.querySelector("label");
-
-    if (input.checked || wasDone) {
+    
+    if (input.checked || task.isDone === true) {
       label.classList.add("is-done");
       label.classList.remove("is-undone");
       input.checked = true;
@@ -223,20 +258,36 @@ const tasksList = {
     };
   },
 
-  submitEdit(value, id) {
-    const li = toDoList.querySelector(`[data-id="${id}"]`),
+  submitEdit(id) {
+    toDoInput.dataset.editId = "";
+
+    const task = model.state.find(task => task.id === id),
+          li = toDoList.querySelector(`[data-id="${id}"]`),
           label = li.querySelector("label"),
           checkbox = label.previousSibling;
 
-    label.textContent = value;
-    label.setAttribute("for", value);
-    checkbox.setAttribute("name", value);
+    label.textContent = task.value;
+    label.setAttribute("for", task.value);
+    checkbox.setAttribute("name", task.value);
   }
 };
 
 toDoForm.addEventListener("submit", formController);
 toDoList.addEventListener("click", listController);
-tasksModel.initialRender();
+modelMethods.initialRender();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -287,29 +338,26 @@ let counterState = {
   number: 0
 };
 
-const clearInput = () => {
-  const value = counter.value;
-  let cleanValue = "";
-
-  for (let i = 0; i < value.length; i++) {
-    let symbol = value[i];
-    if (!isNaN(Number(symbol))) cleanValue += symbol;
-  };
-  
+const filterInput = () => {
+  const value = counter.value.split("");
+  let cleanValue = value
+      .filter(symbol => !isNaN(Number(symbol)))
+      .join("");
   counter.value = cleanValue;
   
-  counterController.setState(cleanValue);
+  counterController.setNumber(cleanValue);
 };
 
 const counterController = {
-  render(value) {
-    const areDifferent = value !== counterState.number;
-    if (areDifferent) counter.value = value;
+  render(counterStateValue) {
+    counter.value = counterStateValue;
   },
 
-  setState(value) {
-    counterController.render(value);
-    counterState.number = value;
+  setNumber(value) {
+    const areDifferent = value !== counterState.number;
+    if (areDifferent) counterState.number = value;
+
+    counterController.render(counterState.number);
   },
 
   toJSON() {
@@ -320,11 +368,11 @@ const counterController = {
 };
 
 const changeValue = (e) => {
-  if (e.target === minus) counterController.setState(Number(counter.value) - 1);
-  else if (e.target === plus) counterController.setState(Number(counter.value) + 1);
+  if (e.target === minus) counterController.setNumber(Number(counter.value) - 1);
+  else if (e.target === plus) counterController.setNumber(Number(counter.value) + 1);
 };
 
-counter.addEventListener("input", clearInput);
+counter.addEventListener("input", filterInput);
 counterBox.addEventListener("click", changeValue);
 
 const storageButtons = {
