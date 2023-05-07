@@ -63,7 +63,7 @@ const Task = class {
 
 const model = {
   state: [],
-  previousState: [],
+  previousState: []
 };
 
 const formController = (e) => {
@@ -127,7 +127,6 @@ const modelMethods = {
           task = new Task(id, value, isDone);
 
     modelMethods.updateState(task, arguments.callee.name);
-
     modelMethods.render(id);
     modelMethods.saveToLocalStorage();
 
