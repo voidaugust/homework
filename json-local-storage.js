@@ -77,7 +77,7 @@ const formController = (e) => {
 };
 
 const listController = (e) => {
-  if (e.target.classList.contains(editPen)) taskEdit(e.target);
+  if (e.target.classList.contains(editPen)) startTaskEdit(e.target);
   else if (e.target.classList.contains(copyTask)) modelMethods.copy(e.target);
   else if (e.target.classList.contains(done)) modelMethods.markIsDone(e.target);
   else if (e.target.classList.contains(deleteTrash)) modelMethods.delete(e.target);
@@ -85,7 +85,7 @@ const listController = (e) => {
 
 const clearInput = () => toDoInput.value = "";
 
-const taskEdit = (target) => {
+const startTaskEdit = (target) => {
   const id = target.closest("LI").dataset.id,
         taskToEdit = model.state.find(task => task.id === id);
 
@@ -126,10 +126,12 @@ const modelMethods = {
   saveEdit(value, id) {
     model.previousState = JSON.parse(JSON.stringify(model.state));
 
-    const taskToEdit = model.state.find(task => task.id === id);
+    const taskToEdit = model.state.find(task => task.id === id),
+          index = model.state.indexOf(taskToEdit);
 
     if (value) {
       taskToEdit.value = toDoInput.value;
+      model.state = [...model.state.slice(0, index), taskToEdit, ...model.state.slice(index + 1)];
       modelMethods.render(id);
     } else {
       modelMethods.delete(null, id);
