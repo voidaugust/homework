@@ -50,19 +50,19 @@ const goTimer = (event) => {
 
 const togglePause = (event) => {
   const button = event.target;
-
-  switch(button) {
-    case timerPause:
-      timerPause.classList.add("timer__pause-paused");
-      break;
-
-    default:
-      timerPause.classList.remove("timer__pause-paused");
-  }
+  (button === timerPause)
+    ? timerPause.classList.add("timer__pause-paused")
+    : timerPause.classList.remove("timer__pause-paused");
 };
 
 timerButtons.addEventListener("click", (e) => goTimer(e));
 timerButtons.addEventListener("click", (e) => togglePause(e));
+
+
+
+
+
+
 
 
 
