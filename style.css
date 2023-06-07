@@ -116,7 +116,7 @@ input {
 
 .timer__delay-input {
   padding-bottom: 15px;
-  width: min(200px, 26vw);
+  width: min(200px, 30vw);
   font-size: 2rem;
   text-align: center;
   border-bottom: 1px solid gray;
