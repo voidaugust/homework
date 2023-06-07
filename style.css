@@ -1,0 +1,99 @@
+*, *::after, *::before {
+	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  width: 90vw;
+  margin-inline: auto;
+}
+
+button {
+  border: 0;
+  outline: 0;
+}
+
+.timer {
+  margin-block: 20vh;
+  margin-inline: auto;
+  max-width: 80vw;
+}
+
+.timer__head {
+	font-family: sans-serif;
+	text-align: center;
+	font-size: 30px;
+}
+
+.timer__display {
+	margin-block: 8vh;
+	font-size: 45px;
+	font-family: sans-serif;
+	text-align: center;
+}
+
+.timer__buttons {
+  display: grid;
+  margin-inline: auto;
+  width: min(600px, 80vw);
+  justify-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, auto);
+  row-gap: max(1rem, 4vh);
+  grid-template-areas:
+    "play pause reverse"
+    "stop reset what";
+}
+
+.timer__play,
+.timer__pause,
+.timer__reverse,
+.timer__stop,
+.timer__reset,
+.timer__what {
+	width: min(150px, 22vw);
+  height: max(50px, 10vh);
+	padding-block: .5rem;
+	font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.timer__play {
+  grid-area: play;
+}
+
+.timer__pause {
+  grid-area: pause;
+}
+
+.timer__pause-paused {
+  line-height: 0;
+  text-indent: -9999px;
+  background-color: darkred;
+  color: white;
+}
+
+.timer__pause-paused::after {
+  display: block;
+  line-height: initial;
+  text-indent: 0;
+  content: "paused";
+}
+
+.timer__reverse {
+  grid-area: reverse;
+}
+
+.timer__stop {
+  grid-area: stop;
+}
+
+.timer__reset {
+  grid-area: reset;
+}
+
+.timer__what {
+  grid-area: what;
+}
