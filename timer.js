@@ -5,9 +5,11 @@ const timerDisplay = document.querySelector(".timer__display"),
       timerReverse = document.querySelector(".timer__reverse"),
       timerStop = document.querySelector(".timer__stop"),
       timerReset = document.querySelector(".timer__reset"),
-      timerWhat = document.querySelector(".timer__what");
+      timerWhat = document.querySelector(".timer__what"),
+      timerDelay = document.querySelector(".timer__delay-input");
 
 let timer;
+let delay = timerDelay.value;
 
 const goTimer = (event) => {
   const button = event.target;
@@ -30,8 +32,8 @@ const goTimer = (event) => {
   
       timer = setTimeout(function go() {
         timerDisplay.innerHTML++;
-        timer = setTimeout(go, 1000);
-      }, 1000);
+        timer = setTimeout(go, delay);
+      }, delay);
       break;
 
     case timerReverse:
@@ -41,9 +43,9 @@ const goTimer = (event) => {
       timer = setTimeout(function goBackwards() {
         if (timerDisplay.innerHTML > 0) {
           timerDisplay.innerHTML--;
-          timer = setTimeout(goBackwards, 1000);
+          timer = setTimeout(goBackwards, delay);
         };
-      }, 1000);
+      }, delay);
       break;
   }
 };
@@ -51,18 +53,27 @@ const goTimer = (event) => {
 const togglePause = (event) => {
   const button = event.target;
   (button === timerPause)
-    ? timerPause.classList.add("timer__pause-paused")
-    : timerPause.classList.remove("timer__pause-paused");
+    ? timerPause.classList.add("timer__pause_paused")
+    : timerPause.classList.remove("timer__pause_paused");
+};
+
+const clearInput = () => {
+  const value = timerDelay.value;
+  let numbersValue = "";
+
+  for (let i = 0; i < value.length; i++) {
+    const symbol = value[i];
+    if (!isNaN(Number(symbol))) numbersValue += symbol;
+  };
+
+  timerDelay.value = numbersValue;
+  return numbersValue;
 };
 
 timerButtons.addEventListener("click", (e) => goTimer(e));
 timerButtons.addEventListener("click", (e) => togglePause(e));
-
-
-
-
-
-
+timerDelay.addEventListener("input", clearInput);
+timerDelay.addEventListener("change", () => delay = timerDelay.value);
 
 
 

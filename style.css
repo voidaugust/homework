@@ -4,24 +4,28 @@
   padding: 0;
 }
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .main {
   width: 90vw;
   margin-inline: auto;
 }
 
-button {
+button,
+input {
   border: 0;
   outline: 0;
 }
 
 .timer {
-  margin-block: 20vh;
+  margin-block: 15vh;
   margin-inline: auto;
   max-width: 80vw;
 }
 
 .timer__head {
-	font-family: sans-serif;
 	text-align: center;
 	font-size: 30px;
 }
@@ -29,7 +33,6 @@ button {
 .timer__display {
 	margin-block: 8vh;
 	font-size: 45px;
-	font-family: sans-serif;
 	text-align: center;
 }
 
@@ -68,14 +71,14 @@ button {
   grid-area: pause;
 }
 
-.timer__pause-paused {
+.timer__pause_paused {
   line-height: 0;
   text-indent: -9999px;
   background-color: darkred;
   color: white;
 }
 
-.timer__pause-paused::after {
+.timer__pause_paused::after {
   display: block;
   line-height: initial;
   text-indent: 0;
@@ -96,4 +99,25 @@ button {
 
 .timer__what {
   grid-area: what;
+}
+
+.timer__delay {
+  display: flex;
+  margin-block: 8vh;
+  margin-inline: auto;
+  width: min(600px, 80vw);
+  justify-content: center;
+}
+
+.timer__delay h3 {
+  font-size: 2rem;
+  padding-right: 1rem;
+}
+
+.timer__delay-input {
+  padding-bottom: 15px;
+  width: min(200px, 26vw);
+  font-size: 2rem;
+  text-align: center;
+  border-bottom: 1px solid gray;
 }
