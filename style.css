@@ -4,6 +4,14 @@
   padding: 0;
 }
 
+:root {
+  color-scheme: dark;
+}
+
+.light-mode {
+  color-scheme: light;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
@@ -20,10 +28,17 @@ input {
   outline: 0;
 }
 
-.timer {
-  margin-block: 15vh;
+.timer,
+.header {
+  margin-block: 0 15vh;
   margin-inline: auto;
   max-width: 80vw;
+}
+
+.header {
+  margin-block: 5vh;
+  display: flex;
+  justify-content: center;
 }
 
 .timer__head {
@@ -55,13 +70,18 @@ input {
 .timer__reverse,
 .timer__stop,
 .timer__reset,
-.timer__what {
+.timer__what,
+.header__mode {
   width: min(150px, 22vw);
   height: max(50px, 10vh);
   padding-block: .5rem;
   font-size: 1.25rem;
   text-align: center;
   cursor: pointer;
+}
+
+.header__mode { 
+  margin-inline: auto;
 }
 
 .timer__play {
@@ -121,4 +141,5 @@ input {
   border-bottom: 1px solid gray;
   font-size: 2rem;
   text-align: center;
+  background: transparent;
 }
