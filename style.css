@@ -111,8 +111,8 @@ input {
 }
 
 .timer__delay > h3 {
-  font-size: 2rem;
   padding-right: 1rem;
+  font-size: 2rem;
 }
 
 .timer__delay-input {
