@@ -1,4 +1,5 @@
-const timerDisplay = document.querySelector(".timer__display"),
+const modeButton = document.querySelector(".header__mode"),
+      timerDisplay = document.querySelector(".timer__display"),
       timerButtons = document.querySelector(".timer__buttons"),
       timerPlay = document.querySelector(".timer__play"),
       timerPause = document.querySelector(".timer__pause"),
@@ -70,14 +71,13 @@ const clearInput = () => {
   return numbersValue;
 };
 
+const switchMode = () => document.querySelector(":root").classList.toggle("light-mode");
+
+modeButton.addEventListener("click", switchMode);
 timerButtons.addEventListener("click", (e) => goTimer(e));
 timerButtons.addEventListener("click", (e) => togglePause(e));
 timerDelay.addEventListener("input", clearInput);
 timerDelay.addEventListener("change", () => delay = timerDelay.value);
-
-
-
-
 
 
 
