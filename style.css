@@ -1,5 +1,5 @@
 *, *::after, *::before {
-	box-sizing: border-box;
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -27,14 +27,14 @@ input {
 }
 
 .timer__head {
-	text-align: center;
-	font-size: 2rem;
+  text-align: center;
+  font-size: 2rem;
 }
 
 .timer__display {
-	margin-block: 8vh;
-	font-size: 45px;
-	text-align: center;
+  margin-block: 8vh;
+  font-size: 3rem;
+  text-align: center;
 }
 
 .timer__buttons {
@@ -56,10 +56,10 @@ input {
 .timer__stop,
 .timer__reset,
 .timer__what {
-	width: min(150px, 22vw);
+  width: min(150px, 22vw);
   height: max(50px, 10vh);
-	padding-block: .5rem;
-	font-size: 1.25rem;
+  padding-block: .5rem;
+  font-size: 1.25rem;
   text-align: center;
   cursor: pointer;
 }
@@ -110,7 +110,7 @@ input {
   justify-content: center;
 }
 
-.timer__delay h3 {
+.timer__delay > h3 {
   font-size: 2rem;
   padding-right: 1rem;
 }
@@ -118,7 +118,7 @@ input {
 .timer__delay-input {
   padding-bottom: 15px;
   width: min(200px, 30vw);
+  border-bottom: 1px solid gray;
   font-size: 2rem;
   text-align: center;
-  border-bottom: 1px solid gray;
 }
